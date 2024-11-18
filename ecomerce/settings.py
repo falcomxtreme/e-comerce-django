@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-from decouple import config
+from decouple import config, Csv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,9 +26,20 @@ SECRET_KEY = config("ECOMERCE_MY_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = config("ALLOWED_HOSTS")
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv())
+
+# Minhas aplicações
+
+MY_APPS = [
+    "core.apps.CoreConfig",
+    "users.apps.UsersConfig",
+    "products.apps.ProductsConfig",
+    "orders.apps.OrdersConfig",
+    "payments.apps.PaymentsConfig",
+]
 
 # Aplicações do django
+
 DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -37,15 +48,14 @@ DJANGO_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 ]
-# Minhas aplicações
-MY_APPS = []
 
 # Aplicações de terceiros
+
 THIRD_APPS = []
 
 # Application definition
 
-INSTALLED_APPS = DJANGO_APPS + MY_APPS + THIRD_APPS
+INSTALLED_APPS = MY_APPS + DJANGO_APPS + THIRD_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -62,7 +72,9 @@ ROOT_URLCONF = "ecomerce.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [
+            BASE_DIR / "templates",
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -87,6 +99,10 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+# Adicionando o modelo User ao AUTH_USER_MODEL
+
+AUTH_USER_MODEL = "users.User"
 
 
 # Password validation
